@@ -1,0 +1,23 @@
+
+# Compiled Java files
+*.class
+out/
+bin/
+
+# VS Code
+.vscode/
+
+# JavaFX / generated files
+target/
+
+# Environment files
+.env
+*.env
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE files
+.idea/
+*.iml

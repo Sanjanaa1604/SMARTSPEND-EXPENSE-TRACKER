@@ -1,0 +1,1 @@
+package com.smartspend.ai; public abstract class FinancialInsight {private final String title,message,type; protected FinancialInsight(String t,String m,String type){title=t;message=m;this.type=type;}public String getTitle(){return title;}public String getMessage(){return message;}public String getType(){return type;} public abstract String icon();}

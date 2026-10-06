@@ -1,0 +1,17 @@
+CREATE DATABASE IF NOT EXISTS smartspend CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+USE smartspend;
+DROP TABLE IF EXISTS notifications;
+DROP TABLE IF EXISTS recurring_expenses;
+DROP TABLE IF EXISTS savings_goals;
+DROP TABLE IF EXISTS budgets;
+DROP TABLE IF EXISTS transactions;
+DROP TABLE IF EXISTS categories;
+DROP TABLE IF EXISTS users;
+CREATE TABLE users(id INT PRIMARY KEY AUTO_INCREMENT,name VARCHAR(100) NOT NULL,email VARCHAR(190) NOT NULL UNIQUE,password_hash TEXT NOT NULL,created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP);
+CREATE TABLE categories(id INT PRIMARY KEY AUTO_INCREMENT,name VARCHAR(60) NOT NULL UNIQUE,type ENUM('INCOME','EXPENSE','BOTH') NOT NULL DEFAULT 'EXPENSE');
+CREATE TABLE transactions(id INT PRIMARY KEY AUTO_INCREMENT,user_id INT NOT NULL,category_id INT NOT NULL,amount DECIMAL(12,2) NOT NULL,type ENUM('INCOME','EXPENSE') NOT NULL,description VARCHAR(200) NOT NULL,transaction_date DATE NOT NULL,payment_method VARCHAR(40) NOT NULL,notes VARCHAR(500),created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCADE,FOREIGN KEY(category_id) REFERENCES categories(id),INDEX idx_tx_user_date(user_id,transaction_date),INDEX idx_tx_user_category(user_id,category_id));
+CREATE TABLE budgets(id INT PRIMARY KEY AUTO_INCREMENT,user_id INT NOT NULL,category_id INT NOT NULL,amount DECIMAL(12,2) NOT NULL,month TINYINT NOT NULL,year SMALLINT NOT NULL,FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCADE,FOREIGN KEY(category_id) REFERENCES categories(id),UNIQUE KEY uq_budget(user_id,category_id,month,year));
+CREATE TABLE savings_goals(id INT PRIMARY KEY AUTO_INCREMENT,user_id INT NOT NULL,name VARCHAR(100) NOT NULL,target_amount DECIMAL(12,2) NOT NULL,current_amount DECIMAL(12,2) NOT NULL DEFAULT 0,deadline DATE NOT NULL,description VARCHAR(500),created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCADE);
+CREATE TABLE recurring_expenses(id INT PRIMARY KEY AUTO_INCREMENT,user_id INT NOT NULL,name VARCHAR(100) NOT NULL,amount DECIMAL(12,2) NOT NULL,category_id INT NOT NULL,frequency ENUM('Weekly','Monthly','Yearly') NOT NULL,next_payment_date DATE NOT NULL,FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCADE,FOREIGN KEY(category_id) REFERENCES categories(id));
+CREATE TABLE notifications(id INT PRIMARY KEY AUTO_INCREMENT,user_id INT NOT NULL,title VARCHAR(150) NOT NULL,message VARCHAR(500) NOT NULL,type VARCHAR(40) NOT NULL,is_read BOOLEAN NOT NULL DEFAULT FALSE,created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCADE,INDEX idx_notifications_user_read(user_id,is_read));
+INSERT INTO categories(name,type) VALUES ('Food','EXPENSE'),('Transport','EXPENSE'),('Shopping','EXPENSE'),('Education','EXPENSE'),('Entertainment','EXPENSE'),('Bills','EXPENSE'),('Healthcare','EXPENSE'),('Subscriptions','EXPENSE'),('Travel','EXPENSE'),('Groceries','EXPENSE'),('Salary','INCOME'),('Other','BOTH');

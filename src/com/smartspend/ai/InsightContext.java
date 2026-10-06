@@ -1,0 +1,1 @@
+package com.smartspend.ai; import java.util.*; public record InsightContext(double income,double expense,double savingsRate,String topCategory,double topCategoryAmount,double budgetUse,double predictedExpense){ }

@@ -1,0 +1,3 @@
+package com.smartspend.analytics;
+import com.smartspend.model.Transaction;import java.util.*;
+public class AnomalyDetector {public boolean isUnusual(Transaction tx,List<Transaction> history){List<Double>a=new ArrayList<>();for(Transaction x:history)if(x.getType().equals("EXPENSE")&&x.getCategoryName()!=null&&x.getCategoryName().equalsIgnoreCase(tx.getCategoryName())&&x.getId()!=tx.getId())a.add(x.getAmount());if(a.size()<3)return false;double avg=a.stream().mapToDouble(Double::doubleValue).average().orElse(0);double variance=a.stream().mapToDouble(v->(v-avg)*(v-avg)).average().orElse(0);double sd=Math.sqrt(variance);return tx.getAmount()>avg+2*sd || tx.getAmount()>avg*3;}}

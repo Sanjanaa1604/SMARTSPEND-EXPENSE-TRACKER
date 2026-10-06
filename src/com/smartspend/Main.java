@@ -1,0 +1,3 @@
+package com.smartspend;
+import com.smartspend.controller.*;import javafx.application.Application;import javafx.scene.Scene;import javafx.stage.Stage;
+public class Main extends Application {public void start(Stage stage){stage.setTitle("SmartSpend — AI Personal Finance Manager");stage.setMinWidth(1100);stage.setMinHeight(700);Scene scene=new Scene(new LoginView(stage,()->stage.getScene().setRoot(new RegisterView(stage,()->stage.getScene().setRoot(new LoginView(stage,()->{}))))),1280,820);scene.getStylesheets().add(getClass().getResource("/css/style.css").toExternalForm());stage.setScene(scene);stage.show();}public static void main(String[]args){launch(args);}}
